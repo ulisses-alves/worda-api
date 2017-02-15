@@ -3,8 +3,14 @@ module WordaApi.Actions
 , get
 ) where
 
-type Action = [String] -> IO ()
+import System.IO
+import Paths_worda_api (getDataFileName)
+import WordaApi.Util.Substitute ((%))
+
+type Action = [String] -> IO String
 
 get :: Action
-get [] = return ()
-get (lang:languages) = putStrLn lang
+get [] = return ""
+get (lang:languages) = readFile =<< getDataFileName path
+  where
+    path = "data/words/%.txt" % [lang]

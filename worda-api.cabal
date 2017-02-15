@@ -12,11 +12,12 @@ category:            Web
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
+data-files:          data/words/*.txt
 
 library
   hs-source-dirs:      src
   exposed-modules:     WordaApi.Cli
-  other-modules:       WordaApi.Actions
+  other-modules:       Paths_worda_api, WordaApi.Actions, WordaApi.Util.Substitute
   build-depends:       base >= 4.7 && < 5
   default-language:    Haskell2010
 
