@@ -3,16 +3,21 @@ module WordaApi.Actions
 , get
 ) where
 
-import System.IO (readFile)
+import Control.DeepSeq
+import System.IO (hGetContents, hSetEncoding, withFile, utf8, IOMode(..))
 import Paths_worda_api (getDataFileName)
-import WordaApi.Parser (parse)
+import WordaApi.Parser (WordFrequency, parse)
 import WordaApi.Util.Substitute ((%))
 
 type Action = [String] -> IO String
 
 get :: Action
 get [] = return ""
-get (lang:languages) = fmap (show . parse) content
+get (lang:languages) = do
+    fileName <- getDataFileName path
+    withFile fileName ReadMode $ \handle -> do
+        hSetEncoding handle utf8
+        items <- fmap (show . parse) . hGetContents $ handle
+        return $!! items
   where
     path = "data/words/%.txt" % [lang]
-    content = readFile =<< getDataFileName path
